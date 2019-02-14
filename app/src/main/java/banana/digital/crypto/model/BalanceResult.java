@@ -1,11 +1,9 @@
-package banana.digital.crypto;
+package banana.digital.crypto.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-public class TxListResult {
+public class BalanceResult {
 
     @SerializedName("status")
     @Expose
@@ -17,7 +15,7 @@ public class TxListResult {
 
     @SerializedName("result")
     @Expose
-    public List result;
+    public String result;
 
 
 
