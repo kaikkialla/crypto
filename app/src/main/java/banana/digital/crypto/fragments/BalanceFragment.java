@@ -23,7 +23,7 @@ import retrofit2.Response;
 
 public class BalanceFragment extends Fragment {
 
-    private static TextView textView;
+    private static TextView balance;
 
     @Nullable
     @Override
@@ -34,7 +34,7 @@ public class BalanceFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        textView = view.findViewById(R.id.textView);
+        balance = view.findViewById(R.id.balance);
     }
 
     @Override
@@ -43,10 +43,11 @@ public class BalanceFragment extends Fragment {
         Presenter.getInstance().requestBalance();
     }
 
-    public static void showBalance(String balance) {
-        textView.setText(balance);
+    public static void showBalance(String i) {
+        balance.setText(i);
     }
 }
+
 
 class Presenter {
 
@@ -57,12 +58,20 @@ class Presenter {
     }
 
     public void requestBalance() {
-        Service.getEtherscanSevices().getBalance("0x582A535CB6b1D13e078f5E7e5093B3d3D3Cc255b").enqueue(new Callback<BalanceResult>() {
+        Service.getEtherscanSevices().getBalance("0x3f5CE5FBFe3E9af3971dD833D26bA9b5C936f0bE").enqueue(new Callback<BalanceResult>() {
             @Override
             public void onResponse(Call<BalanceResult> call, Response<BalanceResult> response) {
                 BigDecimal value = new BigDecimal(response.body().result);
-                String displayedValue = Convert.fromWei(value, Convert.Unit.ETHER).toString();
-                BalanceFragment.showBalance(displayedValue);
+                BigDecimal  balance = Convert.fromWei(value, Convert.Unit.ETHER);
+
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("Ether: ");
+                stringBuilder.append(balance.toString());
+                stringBuilder.append("\nUSD: ");
+                stringBuilder.append(balance.doubleValue() * 140.08);
+                String result = stringBuilder.toString();
+
+                BalanceFragment.showBalance(result);
             }
 
             @Override

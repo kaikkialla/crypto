@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import banana.digital.crypto.R;
 
 public class TransactionsFragment extends Fragment {
@@ -21,4 +23,8 @@ public class TransactionsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
+
+    /*
+    Создаем список в адаптере, создаем swap, который вызываем в onResume
+     */
 }
