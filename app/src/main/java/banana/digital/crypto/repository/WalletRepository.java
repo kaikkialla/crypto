@@ -10,6 +10,7 @@ import org.web3j.utils.Convert;
 
 import java.math.BigInteger;
 
+import banana.digital.crypto.BuildConfig;
 import banana.digital.crypto.model.SendTransactionResult;
 import banana.digital.crypto.service.Service;
 import retrofit2.Call;
@@ -17,7 +18,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class WalletRepository {
-    private static final String key = "0xc6381433ee0afbd6b5ad261fa3f5bc27e6d91011069e129459ab58586f9b8e35";
+    private static final String key = BuildConfig.WALLET_PRIVATE_KEY;
     //private static final String key = "0xc6381433ee0afbd6b5ad261fa3f5bc27e6d91011069e129459ab58586f9b8e35";
     public static Credentials mCredentials;
     public static WalletRepository instance;

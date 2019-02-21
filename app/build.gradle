@@ -9,7 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-       // buildConfigField "String", "WALLET_PRIVATE_KEY_JAVA", "${WALLET_PRIVATE_KEY_GRADLE}"
+         buildConfigField "String", "WALLET_PRIVATE_KEY", "${WALLET_PRIVATE_KEY}"
     }
     buildTypes {
         release {
