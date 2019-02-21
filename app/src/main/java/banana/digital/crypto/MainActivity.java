@@ -40,10 +40,13 @@ public class MainActivity extends AppCompatActivity {
 
         //final TextView textView = findViewById(R.id.text_view);
 
+        String a = System.getenv("test");
+
         mViewPager = findViewById(R.id.viewPager);
         tabs = findViewById(R.id.tabs);
         adapter = new Adapter(this.getSupportFragmentManager());
         mViewPager.setAdapter(adapter);
+
 
         tabs.setViewPager(mViewPager);
 

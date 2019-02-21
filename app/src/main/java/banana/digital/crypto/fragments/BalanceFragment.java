@@ -46,37 +46,41 @@ public class BalanceFragment extends Fragment {
     public static void showBalance(String i) {
         balance.setText(i);
     }
-}
 
 
-class Presenter {
 
-    public static Presenter instance;
-    public static Presenter getInstance() {
-        if (instance == null) { instance = new Presenter(); }
-        return instance;
+
+    private static class Presenter {
+
+        public static Presenter instance;
+        public static  Presenter getInstance() {
+            if (instance == null) { instance = new Presenter(); }
+            return instance;
+        }
+
+        public void requestBalance() {
+            Service.getEtherscanSevices().getBalance("0x3f5CE5FBFe3E9af3971dD833D26bA9b5C936f0bE").enqueue(new Callback<BalanceResult>() {
+                @Override
+                public void onResponse(Call<BalanceResult> call, Response<BalanceResult> response) {
+                    BigDecimal value = new BigDecimal(response.body().result);
+                    BigDecimal  balance = Convert.fromWei(value, Convert.Unit.ETHER);
+
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append("Ether: ");
+                    stringBuilder.append(balance.toString());
+                    stringBuilder.append("\nUSD: ");
+                    stringBuilder.append(balance.doubleValue() * 140.08);
+                    String result = stringBuilder.toString();
+
+                    BalanceFragment.showBalance(result);
+                }
+
+                @Override
+                public void onFailure(Call<BalanceResult> call, Throwable t) {
+                }
+            });
+        }
     }
 
-    public void requestBalance() {
-        Service.getEtherscanSevices().getBalance("0x3f5CE5FBFe3E9af3971dD833D26bA9b5C936f0bE").enqueue(new Callback<BalanceResult>() {
-            @Override
-            public void onResponse(Call<BalanceResult> call, Response<BalanceResult> response) {
-                BigDecimal value = new BigDecimal(response.body().result);
-                BigDecimal  balance = Convert.fromWei(value, Convert.Unit.ETHER);
-
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("Ether: ");
-                stringBuilder.append(balance.toString());
-                stringBuilder.append("\nUSD: ");
-                stringBuilder.append(balance.doubleValue() * 140.08);
-                String result = stringBuilder.toString();
-
-                BalanceFragment.showBalance(result);
-            }
-
-            @Override
-            public void onFailure(Call<BalanceResult> call, Throwable t) {
-            }
-        });
-    }
 }
+
