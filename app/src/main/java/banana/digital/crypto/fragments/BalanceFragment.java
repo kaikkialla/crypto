@@ -13,6 +13,8 @@ import android.widget.TextView;
 import org.web3j.utils.Convert;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.util.List;
 
 import banana.digital.crypto.R;
 import banana.digital.crypto.model.BalanceResult;
@@ -40,7 +42,7 @@ public class BalanceFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Presenter.getInstance().requestBalance();
+        Presenter.getInstance().requestBalance("0x3f5CE5FBFe3E9af3971dD833D26bA9b5C936f0bE");
     }
 
     public static void showBalance(String i) {
@@ -52,24 +54,27 @@ public class BalanceFragment extends Fragment {
 
     private static class Presenter {
 
+
+        DecimalFormat decimalFormat = new DecimalFormat(".##");
         public static Presenter instance;
         public static  Presenter getInstance() {
             if (instance == null) { instance = new Presenter(); }
             return instance;
         }
 
-        public void requestBalance() {
-            Service.getEtherscanSevices().getBalance("0x3f5CE5FBFe3E9af3971dD833D26bA9b5C936f0bE").enqueue(new Callback<BalanceResult>() {
+        public void requestBalance(String adress) {
+            Service.getEtherscanSevices().getBalance(adress).enqueue(new Callback<BalanceResult>() {
                 @Override
                 public void onResponse(Call<BalanceResult> call, Response<BalanceResult> response) {
                     BigDecimal value = new BigDecimal(response.body().result);
                     BigDecimal  balance = Convert.fromWei(value, Convert.Unit.ETHER);
+                    //float balance = i.floatValue();
 
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.append("Ether: ");
-                    stringBuilder.append(balance.toString());
+                    stringBuilder.append(decimalFormat.format(balance));
                     stringBuilder.append("\nUSD: ");
-                    stringBuilder.append(balance.doubleValue() * 140.08);
+                    stringBuilder.append(decimalFormat.format(balance.doubleValue() * 149.18));
                     String result = stringBuilder.toString();
 
                     BalanceFragment.showBalance(result);
@@ -80,7 +85,23 @@ public class BalanceFragment extends Fragment {
                 }
             });
         }
-    }
+/*
+        public int BalanceFromatter(BigDecimal i){
+            String s = decimalFormat.format(i);
+            String main = s.split(".")[0];
+            String decimal = s.split(".")[1];
+            int mainLenght = main.length();
+            char[] chars = main.toCharArray();
+            for(int y = 0; y <= mainLenght; y++) {
+                if(y % 3 == 0) {
 
+                }
+            }
+
+            int balance = 0;
+            return balance;
+        }
+        */
+    }
 }
 

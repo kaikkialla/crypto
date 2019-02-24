@@ -3,6 +3,7 @@ package banana.digital.crypto.service;
 
 import banana.digital.crypto.model.BalanceResult;
 import banana.digital.crypto.model.SendTransactionResult;
+import banana.digital.crypto.model.Transactions;
 import banana.digital.crypto.model.TxListResult;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -17,7 +18,7 @@ public interface EtherscanService {
     Call<BalanceResult> getBalance(@Query("address") String address);
 
     @GET("https://api.etherscan.io/api?module=account&action=txlist&startblock=0&endblock=99999999&sort=asc&apikey=" + API_KEY)
-    Call<TxListResult> getTransactions(@Query("address") String address);
+    Call<Transactions> getTransactions(@Query("address") String address);
 
 
     @GET("https://api.etherscan.io/api?module=proxy&action=eth_sendRawTransaction&apikey=" + API_KEY)

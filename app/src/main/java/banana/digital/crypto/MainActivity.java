@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -33,14 +34,24 @@ public class MainActivity extends AppCompatActivity {
     Adapter adapter;
     PagerSlidingTabStrip tabs;
 
+    public static int SCREEN_WIDTH_PX;
+    public static int SCREEN_HEIGHT_PX;
+    public static float density;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //final TextView textView = findViewById(R.id.text_view);
 
-        String a = System.getenv("test");
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        density = getResources().getDisplayMetrics().density;
+
+        SCREEN_WIDTH_PX = dm.widthPixels;
+        SCREEN_HEIGHT_PX = dm.heightPixels;
+
 
         mViewPager = findViewById(R.id.viewPager);
         tabs = findViewById(R.id.tabs);
@@ -50,42 +61,9 @@ public class MainActivity extends AppCompatActivity {
 
         tabs.setViewPager(mViewPager);
 
-
-
-
-
-
-   /*
-        service.getBalance("0x0D0707963952f2fBA59dD06f2b425ace40b492Fe").enqueue(new Callback<BalanceResult>() {
-            @Override
-            public void onResponse(Call<BalanceResult> call, Response<BalanceResult> response) {
-                //textView.setText(response.body().result);
-            }
-
-            @Override
-            public void onFailure(Call<BalanceResult> call, Throwable t) {
-
-            }
-        });
-*/
-   /*
-        service.getTransactions("0x0D0707963952f2fBA59dD06f2b425ace40b492Fe").enqueue(new Callback<TxListResult>() {
-
-            @Override
-            public void onResponse(Call<TxListResult> call, Response<TxListResult> response) {
-                Toast.makeText(MainActivity.this, "Response", Toast.LENGTH_SHORT).show();
-                for(int i = 0; i <= response.body().result.size() - 1; i++) {
-                    Log.e("fpkfpsfs", response.body().result.get(i).hash);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TxListResult> call, Throwable t) {         }
-        });
-    }
-    */
     }
 }
+
 
 class Adapter extends FragmentStatePagerAdapter {
 
@@ -105,9 +83,9 @@ class Adapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int i) {
         switch (i) {
             case 0:
-                return new BalanceFragment();
-            case 1:
                 return new TransactionsFragment();
+            case 1:
+                return new BalanceFragment();
             case 2:
                 return new InfoFragment();
             default:
