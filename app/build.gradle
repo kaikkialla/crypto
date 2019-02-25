@@ -31,22 +31,20 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
+
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
     implementation 'org.web3j:core:4.1.0-android'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
-    implementation 'com.astuetz:pagerslidingtabstrip:1.0.1'
 
 // Rx
     implementation "io.reactivex.rxjava2:rxjava:2.2.7"
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 
     implementation 'com.jpardogo.materialtabstrip:library:1.1.1'
+
+
 }
 

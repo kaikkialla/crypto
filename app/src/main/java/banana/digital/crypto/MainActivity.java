@@ -48,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
 
         mViewPager = findViewById(R.id.viewPager);
         tabs = findViewById(R.id.tabs);
-        //adapter = new Adapter(getSupportFragmentManager());
+        adapter = new Adapter(getSupportFragmentManager());
         mViewPager.setAdapter(adapter);
 
 
-        //tabs.setViewPager(mViewPager);
+        tabs.setViewPager(mViewPager);
 
 /*
         io.reactivex.Observable.timer(5, TimeUnit.SECONDS).subscribe();

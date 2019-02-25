@@ -25,11 +25,14 @@ import banana.digital.crypto.model.Transactions;
 import banana.digital.crypto.repository.RxTransactionRepository;
 import banana.digital.crypto.repository.TransactionsRepository;
 import banana.digital.crypto.service.Service;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static banana.digital.crypto.MainActivity.SCREEN_WIDTH_PX;
+import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
 
 public class TransactionsFragment extends Fragment {
 
@@ -80,133 +83,147 @@ public class TransactionsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        /*
-        TransactionsRepository.getInstance().getTransactions(new TransactionsRepository.Callback(){
+        Presenter.getInstance().getRxTransactions();
+    }
+
+
+
+
+
+
+public static class Presenter {
+
+    public static Presenter instance;
+    public static Presenter getInstance() {
+        if (instance == null) { instance = new Presenter(); }
+        return instance;
+    }
+    /*
+    public static void getTransactions(String address) {
+        Service.getEtherscanSevices().getTransactions(address).enqueue(new Callback<Transactions>() {
             @Override
-            public void onNext(List<Transactions.Result> transactions) {
+            public void onResponse(Call<Transactions> call, Response<Transactions> response) {
+                List<Transactions.Result> transactions = response.body().getResult();
+                adapter.swap(transactions);
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Call<Transactions> call, Throwable t) {
 
             }
-        }, "0x3f5CE5FBFe3E9af3971dD833D26bA9b5C936f0bE");
-        */
-        //RxTransactionRepository.getInstance().getTransactions().subscribe();
-        //Presenter.getInstance().getTransactions("0x3f5CE5FBFe3E9af3971dD833D26bA9b5C936f0bE");
+        });
     }
+    */
 
+    //Сделать адрес параметром
+    public static void getRxTransactions() {
+        RxTransactionRepository.getInstance().getTransactions()
+        .observeOn(mainThread())
+        .subscribe(new Observer<List<Transactions.Result>>() {
+            @Override
+            public void onSubscribe(Disposable d) {  }
 
+            @Override
+            public void onNext(List<Transactions.Result> transactions) {
+                adapter.swap(transactions);
+            }
 
+            @Override
+            public void onError(Throwable e) { }
 
-    public static class Presenter {
-
-        public static Presenter instance;
-        public static Presenter getInstance() {
-            if (instance == null) { instance = new Presenter(); }
-            return instance;
-        }
-//0x3f5CE5FBFe3E9af3971dD833D26bA9b5C936f0bE
-        public static void getTransactions(String address) {
-            Service.getEtherscanSevices().getTransactions(address).enqueue(new Callback<Transactions>() {
-                @Override
-                public void onResponse(Call<Transactions> call, Response<Transactions> response) {
-                    List<Transactions.Result> transactions = response.body().getResult();
-                    adapter.swap(transactions);
-                    recyclerView.setAdapter(adapter);
-                }
-
-                @Override
-                public void onFailure(Call<Transactions> call, Throwable t) {
-
-                }
-            });
-        }
-    }
-
-
-
-
-
-    static class Adapter extends RecyclerView.Adapter<ViewHolder> {
-        List<Transactions.Result> mTransactions = new ArrayList<>();
-        Context context;
-
-
-        public Adapter(Context context) {
-            this.context = context;
-        }
-
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            View v = inflater.inflate(R.layout.transactions_item   , parent, false );
-            ViewHolder vh = new ViewHolder(v);
-
-            return vh;
-        }
-
-
-        @Override
-        public void onBindViewHolder(final ViewHolder holder, final int position) {
-            setSizes(holder);
-
-            Transactions.Result item = mTransactions.get(position);
-
-            String from = item.getFrom();
-            String to = item.getTo();
-
-            BigDecimal value0 = new BigDecimal(item.getValue());
-            BigDecimal  value1 = Convert.fromWei(value0, Convert.Unit.ETHER);
-            String value = value1.toString();
-
-            String hash = item.getHash();
-
-            holder.from.setText(from);
-            holder.to.setText(to);
-            holder.value.setText(value);
-            holder.hash.setText(hash);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mTransactions.size();
-
-        }
-
-        public void swap(List<Transactions.Result> list) {
-            mTransactions = list;
-            notifyDataSetChanged();
-        }
-
-        public static void setSizes(ViewHolder holder) {
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(SCREEN_WIDTH_PX / 4, ViewGroup.LayoutParams.WRAP_CONTENT);
-            holder.from.setLayoutParams(params);
-            holder.to.setLayoutParams(params);
-            holder.value.setLayoutParams(params);
-            holder.hash.setLayoutParams(params);
-        }
-    }
-
-
-
-
-
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        View itemView;
-
-        TextView from;
-        TextView to;
-        TextView value;
-        TextView hash;
-
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            this.itemView = itemView;
-
-            this.from = itemView.findViewById(R.id.from);
-            this.to = itemView.findViewById(R.id.to);
-            this.value = itemView.findViewById(R.id.value);
-            this.hash = itemView.findViewById(R.id.hash);
-        }
+            @Override
+            public void onComplete() { }
+        });
     }
 }
+
+
+
+
+
+static class Adapter extends RecyclerView.Adapter<ViewHolder> {
+    List<Transactions.Result> mTransactions = new ArrayList<>();
+    Context context;
+
+
+    public Adapter(Context context) {
+        this.context = context;
+    }
+
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View v = inflater.inflate(R.layout.transactions_item   , parent, false );
+        ViewHolder vh = new ViewHolder(v);
+
+        return vh;
+    }
+
+
+    @Override
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        setSizes(holder);
+
+        Transactions.Result item = mTransactions.get(position);
+
+        String from = item.getFrom();
+        String to = item.getTo();
+
+        BigDecimal value0 = new BigDecimal(item.getValue());
+        BigDecimal  value1 = Convert.fromWei(value0, Convert.Unit.ETHER);
+        String value = value1.toString();
+
+        String hash = item.getHash();
+
+        holder.from.setText(from);
+        holder.to.setText(to);
+        holder.value.setText(value);
+        holder.hash.setText(hash);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mTransactions.size();
+
+    }
+
+    public void swap(List<Transactions.Result> list) {
+        mTransactions = list;
+        notifyDataSetChanged();
+    }
+
+    public static void setSizes(ViewHolder holder) {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(SCREEN_WIDTH_PX / 4, ViewGroup.LayoutParams.WRAP_CONTENT);
+        holder.from.setLayoutParams(params);
+        holder.to.setLayoutParams(params);
+        holder.value.setLayoutParams(params);
+        holder.hash.setLayoutParams(params);
+    }
+}
+
+
+
+
+
+
+public static class ViewHolder extends RecyclerView.ViewHolder {
+    View itemView;
+
+    TextView from;
+    TextView to;
+    TextView value;
+    TextView hash;
+
+
+    public ViewHolder(View itemView) {
+        super(itemView);
+        this.itemView = itemView;
+
+        this.from = itemView.findViewById(R.id.from);
+        this.to = itemView.findViewById(R.id.to);
+        this.value = itemView.findViewById(R.id.value);
+        this.hash = itemView.findViewById(R.id.hash);
+    }
+}}

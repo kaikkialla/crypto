@@ -30,7 +30,7 @@ public class RxTransactionRepository {
 
 
     public void updateTransactions() {
-        Service.getEtherscanSevices().getTransactions("0x3f5CE5FBFe3E9af3971dD833D26bA9b5C936f0bE").enqueue(new Callback<Transactions>() {
+        Service.getEtherscanSevices().getTransactions("0xA4Eb0f8D1DAa48D6e6675022a208006fDC89606B").enqueue(new Callback<Transactions>() {
             @Override
             public void onResponse(Call<Transactions> call, Response<Transactions> response) {
                 if(response.isSuccessful()) {
