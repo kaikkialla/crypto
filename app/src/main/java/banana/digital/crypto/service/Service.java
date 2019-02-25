@@ -3,9 +3,6 @@ package banana.digital.crypto.service;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import banana.digital.crypto.model.BalanceResult;
-import banana.digital.crypto.model.TxListResult;
-import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

@@ -1,36 +1,35 @@
 package banana.digital.crypto.fragments;
 
+
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
 import org.web3j.utils.Convert;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import banana.digital.crypto.R;
-import banana.digital.crypto.model.Transaction;
 import banana.digital.crypto.model.Transactions;
-import banana.digital.crypto.model.TxListResult;
+import banana.digital.crypto.repository.RxTransactionRepository;
+import banana.digital.crypto.repository.TransactionsRepository;
 import banana.digital.crypto.service.Service;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static banana.digital.crypto.MainActivity.SCREEN_WIDTH_PX;
-import static banana.digital.crypto.MainActivity.density;
 
 public class TransactionsFragment extends Fragment {
 
@@ -67,6 +66,8 @@ public class TransactionsFragment extends Fragment {
     }
 
 
+
+
     public static void setSizes() {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(SCREEN_WIDTH_PX / 4, ViewGroup.LayoutParams.WRAP_CONTENT);
         hash.setLayoutParams(params);
@@ -79,7 +80,16 @@ public class TransactionsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Presenter.getInstance().getTransactions("0x3f5CE5FBFe3E9af3971dD833D26bA9b5C936f0bE");
+        /*
+        TransactionsRepository.getInstance().getTransactions(new TransactionsRepository.Callback(){
+            @Override
+            public void onNext(List<Transactions.Result> transactions) {
+
+            }
+        }, "0x3f5CE5FBFe3E9af3971dD833D26bA9b5C936f0bE");
+        */
+        //RxTransactionRepository.getInstance().getTransactions().subscribe();
+        //Presenter.getInstance().getTransactions("0x3f5CE5FBFe3E9af3971dD833D26bA9b5C936f0bE");
     }
 
 

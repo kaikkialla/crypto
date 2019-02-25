@@ -1,28 +1,17 @@
 package banana.digital.crypto.fragments;
 
+
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.transition.Transition;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import org.web3j.crypto.RawTransaction;
-import org.web3j.utils.Convert;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import banana.digital.crypto.R;
-import banana.digital.crypto.model.BalanceResult;
 import banana.digital.crypto.repository.WalletRepository;
-import banana.digital.crypto.service.Service;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class InfoFragment extends Fragment {
     Button button;

@@ -1,31 +1,24 @@
 package banana.digital.crypto;
 
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+
+
+
 import android.os.Bundle;
+
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
+import androidx.viewpager.widget.ViewPager;
 import banana.digital.crypto.fragments.BalanceFragment;
 import banana.digital.crypto.fragments.InfoFragment;
 import banana.digital.crypto.fragments.TransactionsFragment;
-import banana.digital.crypto.model.BalanceResult;
-import banana.digital.crypto.model.TxListResult;
-import banana.digital.crypto.service.EtherscanService;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,23 +48,51 @@ public class MainActivity extends AppCompatActivity {
 
         mViewPager = findViewById(R.id.viewPager);
         tabs = findViewById(R.id.tabs);
-        adapter = new Adapter(this.getSupportFragmentManager());
+        //adapter = new Adapter(getSupportFragmentManager());
         mViewPager.setAdapter(adapter);
 
 
-        tabs.setViewPager(mViewPager);
+        //tabs.setViewPager(mViewPager);
 
+/*
+        io.reactivex.Observable.timer(5, TimeUnit.SECONDS).subscribe();
+
+        io.reactivex.Observable<Integer> observable = io.reactivex.Observable.just(1, 2, 3, 5 , 8, 13);
+        observable.subscribe(new Observer<Integer>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+        }
+
+    }*/
     }
 }
 
+class Adapter extends androidx.fragment.app.FragmentPagerAdapter {
 
-class Adapter extends FragmentStatePagerAdapter {
-
-    String[] titles = {"Balance", "Transactions", "Account info"};
+    String[] titles = {"Transactions", "Balance", "Account info"};
 
     public Adapter(FragmentManager fm) {
         super(fm);
     }
+
 
     @Override
     public int getCount() {
@@ -99,6 +120,7 @@ class Adapter extends FragmentStatePagerAdapter {
         return titles[position];
     }
 }
+
 
 
 //IVAZ67XPPXX5WFNUZMVEZKKT81BCKMYETE

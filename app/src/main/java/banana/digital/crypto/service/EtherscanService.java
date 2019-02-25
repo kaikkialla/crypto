@@ -4,7 +4,6 @@ package banana.digital.crypto.service;
 import banana.digital.crypto.model.BalanceResult;
 import banana.digital.crypto.model.SendTransactionResult;
 import banana.digital.crypto.model.Transactions;
-import banana.digital.crypto.model.TxListResult;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
