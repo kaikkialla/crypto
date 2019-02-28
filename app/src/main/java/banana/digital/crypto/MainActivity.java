@@ -53,35 +53,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         tabs.setViewPager(mViewPager);
-
-/*
-        io.reactivex.Observable.timer(5, TimeUnit.SECONDS).subscribe();
-
-        io.reactivex.Observable<Integer> observable = io.reactivex.Observable.just(1, 2, 3, 5 , 8, 13);
-        observable.subscribe(new Observer<Integer>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(Integer integer) {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
-        }
-
-    }*/
     }
 }
 

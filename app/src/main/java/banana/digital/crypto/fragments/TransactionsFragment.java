@@ -1,35 +1,35 @@
 package banana.digital.crypto.fragments;
 
 
-import android.content.Context;
+import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
+
+import com.jakewharton.rxbinding3.appcompat.RxSearchView;
 
 import org.web3j.utils.Convert;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import banana.digital.crypto.R;
 import banana.digital.crypto.model.Transactions;
 import banana.digital.crypto.repository.RxTransactionRepository;
-import banana.digital.crypto.repository.TransactionsRepository;
-import banana.digital.crypto.service.Service;
-import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static banana.digital.crypto.MainActivity.SCREEN_WIDTH_PX;
 import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
@@ -43,6 +43,9 @@ public class TransactionsFragment extends Fragment {
     static TextView from;
     static TextView to;
     static TextView value;
+    SearchView searchView;
+
+    Disposable mDisposable;
 
     @Nullable
     @Override
@@ -59,9 +62,9 @@ public class TransactionsFragment extends Fragment {
         from = view.findViewById(R.id.from);
         to = view.findViewById(R.id.to);
         value = view.findViewById(R.id.value);
+        searchView = view.findViewById(R.id.searchView);
 
-
-        adapter = new Adapter(getContext());
+        adapter = new Adapter(getActivity());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
 
@@ -83,58 +86,54 @@ public class TransactionsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Presenter.getInstance().getRxTransactions();
+
+        mDisposable = io.reactivex.Observable.combineLatest(
+                RxSearchView.queryTextChanges(searchView).debounce(500, TimeUnit.MILLISECONDS),
+                RxTransactionRepository.getInstance().getTransactions(),
+                (CharSequence query,  List<Transactions.Result> transactions) -> {
+                    final List<Transactions.Result> filteredTransactions = new ArrayList<>();
+                    for (Transactions.Result transaction : transactions) {
+                        if(transaction.getHash().contains(query)) {
+                            filteredTransactions.add(transaction);
+                        }
+                    }
+                    return filteredTransactions;
+                }).observeOn(mainThread()).subscribe(transactions -> {
+                    adapter.swap(transactions);
+                });
+
+
+
+        //RxSearchView.queryTextChanges(searchView);
+        //Presenter.getInstance().getRxTransactions();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        mDisposable.dispose();
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 
-
-
-
-public static class Presenter {
+    public static class Presenter {
 
     public static Presenter instance;
     public static Presenter getInstance() {
-        if (instance == null) { instance = new Presenter(); }
+        if (instance == null) {
+            instance = new Presenter();
+        }
         return instance;
     }
-    /*
-    public static void getTransactions(String address) {
-        Service.getEtherscanSevices().getTransactions(address).enqueue(new Callback<Transactions>() {
-            @Override
-            public void onResponse(Call<Transactions> call, Response<Transactions> response) {
-                List<Transactions.Result> transactions = response.body().getResult();
-                adapter.swap(transactions);
-                recyclerView.setAdapter(adapter);
-            }
-
-            @Override
-            public void onFailure(Call<Transactions> call, Throwable t) {
-
-            }
-        });
-    }
-    */
 
     //Сделать адрес параметром
     public static void getRxTransactions() {
-        RxTransactionRepository.getInstance().getTransactions()
-        .observeOn(mainThread())
-        .subscribe(new Observer<List<Transactions.Result>>() {
-            @Override
-            public void onSubscribe(Disposable d) {  }
 
-            @Override
-            public void onNext(List<Transactions.Result> transactions) {
-                adapter.swap(transactions);
-            }
 
-            @Override
-            public void onError(Throwable e) { }
 
-            @Override
-            public void onComplete() { }
-        });
     }
 }
 
@@ -144,17 +143,17 @@ public static class Presenter {
 
 static class Adapter extends RecyclerView.Adapter<ViewHolder> {
     List<Transactions.Result> mTransactions = new ArrayList<>();
-    Context context;
+    Activity activity;
 
 
-    public Adapter(Context context) {
-        this.context = context;
+    public Adapter(Activity activity) {
+        this.activity = activity;
     }
 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(activity);
         View v = inflater.inflate(R.layout.transactions_item   , parent, false );
         ViewHolder vh = new ViewHolder(v);
 
@@ -181,6 +180,15 @@ static class Adapter extends RecyclerView.Adapter<ViewHolder> {
         holder.to.setText(to);
         holder.value.setText(value);
         holder.hash.setText(hash);
+
+
+        holder.itemView.setOnClickListener(view -> {
+            Fragment fragment = TransactionInfoFragment.newInstance(mTransactions.get(position));
+            //activity.getFragmentManager().beginTransaction().replace(R.id.viewPager, fragment).commit();
+        });
+
+
+
     }
 
     @Override
