@@ -230,4 +230,5 @@ public static class ViewHolder extends RecyclerView.ViewHolder {
         this.value = itemView.findViewById(R.id.value);
         this.hash = itemView.findViewById(R.id.hash);
     }
-}}
+}
+}
