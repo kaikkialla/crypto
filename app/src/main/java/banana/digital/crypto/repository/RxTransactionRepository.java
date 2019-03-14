@@ -1,8 +1,13 @@
 package banana.digital.crypto.repository;
 
 
+import android.content.Context;
+
 import java.util.List;
 
+import androidx.room.Room;
+import banana.digital.crypto.MainDatabase;
+import banana.digital.crypto.TransactionDao;
 import banana.digital.crypto.model.Transactions;
 import banana.digital.crypto.service.Service;
 import io.reactivex.Observable;
@@ -15,6 +20,7 @@ public class RxTransactionRepository {
     public static RxTransactionRepository instance;
 
     BehaviorSubject<List<Transactions.Result>> transactions = BehaviorSubject.create();
+    TransactionDao mTransactionDao;
 
 
     private RxTransactionRepository(){}
@@ -35,6 +41,7 @@ public class RxTransactionRepository {
             public void onResponse(Call<Transactions> call, Response<Transactions> response) {
                 if(response.isSuccessful()) {
                     transactions.onNext(response.body().getResult());
+                    saveTransactions(response.body().getResult());
                 }
             }
             @Override
@@ -50,4 +57,29 @@ public class RxTransactionRepository {
         return transactions;
     }
 
+
+    public void initialize(Context context) {
+        mTransactionDao = Room.databaseBuilder(context.getApplicationContext(), MainDatabase.class, "database").build().getTransactionDao();
+        loadTransactions();
+    }
+
+
+    public void loadTransactions() {
+//        new Thread(){
+//            @Override
+//            public void run() {
+//                transactions.onNext(mTransactionDao.getAll());
+//            }
+//        }.start();
+    }
+
+    public void saveTransactions(List<Transactions.Result> transactions) {
+//        new Thread(){
+//            @Override
+//            public void run() {
+//                mTransactionDao.deleteAll();
+//                mTransactionDao.insert(transactions);
+//            }
+//        }.start();
+    }
 }

@@ -18,6 +18,7 @@ import androidx.viewpager.widget.ViewPager;
 import banana.digital.crypto.fragments.BalanceFragment;
 import banana.digital.crypto.fragments.InfoFragment;
 import banana.digital.crypto.fragments.TransactionsFragment;
+import banana.digital.crypto.repository.RxTransactionRepository;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        RxTransactionRepository.getInstance().initialize(this);
         setContentView(R.layout.activity_main);
 
 

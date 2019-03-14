@@ -4,6 +4,12 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 public class Transactions {
 
     @SerializedName("status")
@@ -44,47 +50,39 @@ public class Transactions {
 
 
 
+//    @Entity(tableName = "tx")
+    public static class Result {
 
-    public class Result {
-
-        @SerializedName("blockNumber")
-        @Expose
-        private String blockNumber;
-
-        @SerializedName("timeStamp")
-        @Expose
-        private String timeStamp;
-
-        @SerializedName("hash")
-        @Expose
+        @NonNull @PrimaryKey
+        @SerializedName("hash") @Expose
         private String hash;
 
-        @SerializedName("nonce")
-        @Expose
+
+        @SerializedName("blockNumber") @Expose
+        private String blockNumber;
+
+        @SerializedName("timeStamp") @Expose
+        private String timeStamp;
+
+        @SerializedName("nonce") @Expose
         private String nonce;
 
-        @SerializedName("blockHash")
-        @Expose
+        @SerializedName("blockHash") @Expose
         private String blockHash;
 
-        @SerializedName("transactionIndex")
-        @Expose
+        @SerializedName("transactionIndex") @Expose
         private String transactionIndex;
 
-        @SerializedName("from")
-        @Expose
+        @SerializedName("from") @Expose
         private String from;
 
-        @SerializedName("to")
-        @Expose
+        @SerializedName("to") @Expose
         private String to;
 
-        @SerializedName("value")
-        @Expose
+        @SerializedName("value") @Expose
         private String value;
 
-        @SerializedName("gas")
-        @Expose
+        @SerializedName("gas") @Expose
         private String gas;
 
         @SerializedName("gasPrice")
@@ -266,3 +264,6 @@ public class Transactions {
 }
 
 
+//@Ignore - не добавлять колонку в таблицу
+//@ColumnInfo(name = "name") - изменить название колонки
+//@PrimaryKey - ключ, он должен быть @NonNull

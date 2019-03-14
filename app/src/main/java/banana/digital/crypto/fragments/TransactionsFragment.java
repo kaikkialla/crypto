@@ -1,9 +1,7 @@
 package banana.digital.crypto.fragments;
 
-
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +16,10 @@ import org.web3j.utils.Convert;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -87,21 +83,21 @@ public class TransactionsFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        mDisposable = io.reactivex.Observable.combineLatest(
-                RxSearchView.queryTextChanges(searchView).debounce(500, TimeUnit.MILLISECONDS),
-                RxTransactionRepository.getInstance().getTransactions(),
-                (CharSequence query,  List<Transactions.Result> transactions) -> {
-                    final List<Transactions.Result> filteredTransactions = new ArrayList<>();
-                    for (Transactions.Result transaction : transactions) {
-                        if(transaction.getHash().contains(query)) {
-                            filteredTransactions.add(transaction);
-                        }
-                    }
-                    return filteredTransactions;
-                }).observeOn(mainThread()).subscribe(transactions -> {
-                    adapter.swap(transactions);
-                });
-
+//        mDisposable = io.reactivex.Observable.combineLatest(
+//                RxSearchView.queryTextChanges(searchView).debounce(500, TimeUnit.MILLISECONDS),
+//                RxTransactionRepository.getInstance().getTransactions(),
+//                (CharSequence query,  List<Transactions.Result> transactions) -> {
+//                    final List<Transactions.Result> filteredTransactions = new ArrayList<>();
+//                    for (Transactions.Result transaction : transactions) {
+//                        if(transaction.getHash().contains(query)) {
+//                            filteredTransactions.add(transaction);
+//                        }
+//                    }
+//                    return filteredTransactions;
+//                }).observeOn(mainThread()).subscribe(transactions -> {
+//                    adapter.swap(transactions);
+//                });
+//
 
 
         //RxSearchView.queryTextChanges(searchView);
