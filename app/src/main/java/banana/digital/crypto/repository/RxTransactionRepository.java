@@ -1,18 +1,27 @@
 package banana.digital.crypto.repository;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 
 import androidx.room.Room;
+import banana.digital.crypto.Executor;
 import banana.digital.crypto.MainDatabase;
 import banana.digital.crypto.TransactionDao;
 import banana.digital.crypto.model.Transactions;
 import banana.digital.crypto.service.Service;
 import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,23 +75,49 @@ public class RxTransactionRepository {
     }
 
 
+    @SuppressLint("StaticFieldLeak")
     public void loadTransactions() {
-        new Thread(){
+        new AsyncTask<String, Integer, Void>() {
+
             @Override
-            public void run() {
-                Log.e("hdphdfa", "loaded");
+            protected Void doInBackground(String... strings) {
                 transactions.onNext(mTransactionDao.getAll());
+                return null;
             }
-        }.start();
+        };
+
     }
 
+
+    @SuppressLint({"StaticFieldLeak", "CheckResult"})
     public void saveTransactions(List<Transactions.Result> transactions) {
-        new Thread(){
+        Single.fromCallable(new Callable<Void>() {
+
             @Override
-            public void run() {
+            public Void call() throws Exception {
                 mTransactionDao.deleteAll();
                 mTransactionDao.insert(transactions);
+                return null;
             }
-        }.start();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(value -> {
+                    //код будет выполнен в главном потоке
+                    return value;
+                }).observeOn(Schedulers.io())
+                .map(value -> {
+                    //код будет выполнен в рабочем потоке
+                    return value;
+        });
+
+//        new AsyncTask<String, Integer, Void>() {
+//            @Override
+//            protected Void doInBackground(String... strings) {
+//                mTransactionDao.deleteAll();
+//                mTransactionDao.insert(transactions);
+//                return null;
+//            }
+//        };
+
     }
 }

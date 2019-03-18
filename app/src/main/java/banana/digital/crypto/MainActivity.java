@@ -39,11 +39,11 @@ public class MainActivity extends AppCompatActivity {
         RxTransactionRepository.getInstance().initialize(this);
         setContentView(R.layout.activity_main);
 
+        Executor.getInstance().start();
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         density = getResources().getDisplayMetrics().density;
-
         SCREEN_WIDTH_PX = dm.widthPixels;
         SCREEN_HEIGHT_PX = dm.heightPixels;
 
