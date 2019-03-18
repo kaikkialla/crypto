@@ -2,6 +2,8 @@ package banana.digital.crypto.repository;
 
 
 import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -65,21 +67,22 @@ public class RxTransactionRepository {
 
 
     public void loadTransactions() {
-//        new Thread(){
-//            @Override
-//            public void run() {
-//                transactions.onNext(mTransactionDao.getAll());
-//            }
-//        }.start();
+        new Thread(){
+            @Override
+            public void run() {
+                Log.e("hdphdfa", "loaded");
+                transactions.onNext(mTransactionDao.getAll());
+            }
+        }.start();
     }
 
     public void saveTransactions(List<Transactions.Result> transactions) {
-//        new Thread(){
-//            @Override
-//            public void run() {
-//                mTransactionDao.deleteAll();
-//                mTransactionDao.insert(transactions);
-//            }
-//        }.start();
+        new Thread(){
+            @Override
+            public void run() {
+                mTransactionDao.deleteAll();
+                mTransactionDao.insert(transactions);
+            }
+        }.start();
     }
 }

@@ -49,8 +49,7 @@ public class Transactions {
     }
 
 
-
-//    @Entity(tableName = "tx")
+    @Entity(tableName = "tx")
     public static class Result {
 
         @NonNull @PrimaryKey

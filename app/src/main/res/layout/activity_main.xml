@@ -9,21 +9,23 @@
     android:orientation="vertical">
 
 
-    <com.astuetz.PagerSlidingTabStrip
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:pstsShouldExpand="true"
-        app:pstsTabTextAllCaps="false"
-        app:pstsTabTextSize="18sp"/>
+    <!--<com.astuetz.PagerSlidingTabStrip-->
+        <!--android:id="@+id/tabs"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="?attr/actionBarSize"-->
+        <!--android:background="?attr/colorPrimary"-->
+        <!--app:pstsShouldExpand="true"-->
+        <!--app:pstsTabTextAllCaps="false"-->
+        <!--app:pstsTabTextSize="18sp"/>-->
+    <!---->
+    <!--<androidx.viewpager.widget.ViewPager-->
+        <!--android:id="@+id/viewPager"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
 
-
-
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
 </LinearLayout>

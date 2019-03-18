@@ -6,22 +6,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Date;
+
 import androidx.fragment.app.Fragment;
 import banana.digital.crypto.R;
 import banana.digital.crypto.model.Transactions;
 
 public class TransactionInfoFragment extends Fragment {
 
-    TextView mHash;
-    TextView mFrom;
-    TextView mTo;
-    TextView mValue;
+    static TextView mHash;
+    static TextView mFrom;
+    static TextView mTo;
+    static TextView mValue;
+    static TextView mTimeStamp;
     static Transactions.Result transaction;
 
 
-    public static androidx.fragment.app.Fragment newInstance(Transactions.Result list) {
+    public static androidx.fragment.app.Fragment newInstance(Transactions.Result result) {
         TransactionInfoFragment fragment = new TransactionInfoFragment();
-        transaction = list;
+        transaction = result;
         return fragment;
     }
 
@@ -39,6 +42,7 @@ public class TransactionInfoFragment extends Fragment {
         mFrom = view.findViewById(R.id.from);
         mTo = view.findViewById(R.id.to);
         mValue = view.findViewById(R.id.value);
+        mTimeStamp = view.findViewById(R.id.timestamp);
     }
 
     @Override
@@ -47,35 +51,41 @@ public class TransactionInfoFragment extends Fragment {
         Presenter.load(transaction);
     }
 
-    void setHash(String hash) {
-        mHash.setText(hash);
+    public static void setTimeStamp(String timeStamp) {
+        mTimeStamp.setText(timeStamp);
     }
-
-    void setFrom(String from) {
-        mFrom.setText(from);
+    public static void setHash(String hash) {
+        mHash.setText("Hash: " + hash);
     }
-    void setTo(String to) {
-        mTo.setText(to);
+    public static void setFrom(String from) {
+        mFrom.setText("From: " + from);
     }
-    void setValue(String value) {
-        mValue.setText(value);
+    public static void setTo(String to) {
+        mTo.setText("To: " + to);
+    }
+    public static void setValue(String value) {
+        mValue.setText("Value: " + value);
     }
 
 
     public static class Presenter {
 
         public static void load(Transactions.Result transaction) {
-            TransactionInfoFragment fragment = new TransactionInfoFragment();
 
+            int timestamp = Integer.parseInt(transaction.getTimeStamp());
+            Date time=new java.util.Date((long)timestamp*1000);
+
+            String timeStamp = time.toString();
             String hash = transaction.getHash();
             String from = transaction.getFrom();
             String to = transaction.getTo();
             String value = transaction.getValue();
 
-            fragment.setHash(hash);
-            fragment.setFrom(from);
-            fragment.setTo(to);
-            fragment.setValue(value);
+            TransactionInfoFragment.setTimeStamp(timeStamp);
+            TransactionInfoFragment.setHash(hash);
+            TransactionInfoFragment.setFrom(from);
+            TransactionInfoFragment.setTo(to);
+            TransactionInfoFragment.setValue(value);
 
         }
     }

@@ -1,72 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:orientation="horizontal"
-        android:background="#eee">
-
-        <TextView
-            android:id="@+id/hash"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:text="Hash"
-            android:layout_gravity="center_vertical"
-            android:paddingLeft="4dp"/>
-
-
-        <TextView
-            android:id="@+id/from"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:text="From"
-            android:layout_gravity="center_vertical"
-            android:paddingLeft="4dp"/>
-
-        <TextView
-            android:id="@+id/to"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:layout_marginLeft="24dp"
-            android:layout_gravity="center_vertical"
-            android:text="To"
-            android:paddingLeft="4dp"/>
-
-
-        <TextView
-            android:id="@+id/value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:text="Value"
-            android:layout_gravity="center_vertical"
-            android:paddingLeft="4dp"/>
-
-    </LinearLayout>
-
-
-
-
+    android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#fff"/>
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 
-    <!--<SearchView-->
-        <!--android:id="@+id/searchView"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="?attr/actionBarSize"/>-->
-</LinearLayout>
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <LinearLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:orientation="vertical">
+
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                app:layout_collapseMode="parallax"
+                android:inputType="textPassword"
+                />
+
+
+            <LinearLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:orientation="horizontal"
+                android:background="#eee"
+                app:layout_collapseMode="parallax"
+                android:paddingTop="2dp">
+
+                <TextView
+                    android:id="@+id/hash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="Hash"
+                    android:layout_gravity="center_vertical"
+                    android:paddingLeft="4dp"
+                    android:textColor="@color/textLight"/>
+
+
+                <TextView
+                    android:id="@+id/from"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="From"
+                    android:layout_gravity="center_vertical"
+                    android:paddingLeft="4dp"
+                    android:textColor="@color/textLight"/>
+
+                <TextView
+                    android:id="@+id/to"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginLeft="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="To"
+                    android:paddingLeft="4dp"
+                    android:textColor="@color/textLight"/>
+
+
+                <TextView
+                    android:id="@+id/value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="Value"
+                    android:layout_gravity="center_vertical"
+                    android:paddingLeft="4dp"
+                    android:textColor="@color/textLight"/>
+
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

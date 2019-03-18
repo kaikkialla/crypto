@@ -24,9 +24,9 @@ import banana.digital.crypto.repository.RxTransactionRepository;
 public class MainActivity extends AppCompatActivity {
 
 
-    ViewPager mViewPager;
-    Adapter adapter;
-    PagerSlidingTabStrip tabs;
+//    ViewPager mViewPager;
+//    Adapter adapter;
+//    PagerSlidingTabStrip tabs;
 
     public static int SCREEN_WIDTH_PX;
     public static int SCREEN_HEIGHT_PX;
@@ -48,51 +48,53 @@ public class MainActivity extends AppCompatActivity {
         SCREEN_HEIGHT_PX = dm.heightPixels;
 
 
-        mViewPager = findViewById(R.id.viewPager);
-        tabs = findViewById(R.id.tabs);
-        adapter = new Adapter(getSupportFragmentManager());
-        mViewPager.setAdapter(adapter);
+        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new TransactionsFragment()).commit();
 
-
-        tabs.setViewPager(mViewPager);
+//        mViewPager = findViewById(R.id.viewPager);
+//        tabs = findViewById(R.id.tabs);
+//        adapter = new Adapter(getSupportFragmentManager());
+//        mViewPager.setAdapter(adapter);
+//
+//
+//        tabs.setViewPager(mViewPager);
     }
 }
 
-class Adapter extends androidx.fragment.app.FragmentPagerAdapter {
-
-    String[] titles = {"Transactions", "Balance", "Account info"};
-
-    public Adapter(FragmentManager fm) {
-        super(fm);
-    }
-
-
-    @Override
-    public int getCount() {
-        return titles.length;
-    }
-
-
-    @Override
-    public Fragment getItem(int i) {
-        switch (i) {
-            case 0:
-                return new TransactionsFragment();
-            case 1:
-                return new BalanceFragment();
-            case 2:
-                return new InfoFragment();
-            default:
-                return null;
-        }
-    }
-
-    @Nullable
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return titles[position];
-    }
-}
+//class Adapter extends androidx.fragment.app.FragmentPagerAdapter {
+//
+//    String[] titles = {"Transactions", "Balance", "Account info"};
+//
+//    public Adapter(FragmentManager fm) {
+//        super(fm);
+//    }
+//
+//
+//    @Override
+//    public int getCount() {
+//        return titles.length;
+//    }
+//
+//
+//    @Override
+//    public Fragment getItem(int i) {
+//        switch (i) {
+//            case 0:
+//                return new TransactionsFragment();
+//            case 1:
+//                return new BalanceFragment();
+//            case 2:
+//                return new InfoFragment();
+//            default:
+//                return null;
+//        }
+//    }
+//
+//    @Nullable
+//    @Override
+//    public CharSequence getPageTitle(int position) {
+//        return titles[position];
+//    }
+//}
 
 
 
