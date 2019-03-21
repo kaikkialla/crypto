@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.Date;
+import java.util.Observable;
 
 import androidx.fragment.app.Fragment;
 import banana.digital.crypto.R;
@@ -88,7 +89,8 @@ public class TransactionInfoFragment extends Fragment {
             TransactionInfoFragment.setValue(value);
 
         }
-    }
+}
+
 }
 
 

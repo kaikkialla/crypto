@@ -28,9 +28,9 @@ public class MainActivity extends AppCompatActivity {
 //    Adapter adapter;
 //    PagerSlidingTabStrip tabs;
 
-    public static int SCREEN_WIDTH_PX;
-    public static int SCREEN_HEIGHT_PX;
-    public static float density;
+//    public static int SCREEN_WIDTH_PX;
+//    public static int SCREEN_HEIGHT_PX;
+//    public static float density;
 
 
     @Override
@@ -41,11 +41,11 @@ public class MainActivity extends AppCompatActivity {
 
         Executor.getInstance().start();
 
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        density = getResources().getDisplayMetrics().density;
-        SCREEN_WIDTH_PX = dm.widthPixels;
-        SCREEN_HEIGHT_PX = dm.heightPixels;
+//        DisplayMetrics dm = new DisplayMetrics();
+//        getWindowManager().getDefaultDisplay().getMetrics(dm);
+//        density = getResources().getDisplayMetrics().density;
+//        SCREEN_WIDTH_PX = dm.widthPixels;
+//        SCREEN_HEIGHT_PX = dm.heightPixels;
 
 
         getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new TransactionsFragment()).commit();
