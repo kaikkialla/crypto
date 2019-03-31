@@ -11,18 +11,20 @@ import banana.digital.crypto.model.Transactions;
 @Dao
 public interface TransactionDao {
 
+
     @Insert
     void insert(List<Transactions.Result> transactions);
-
-    @Query("SELECT * FROM tx WHERE hash = :hash")
-    List<Transactions.Result> getTransaction(String hash);
-
-    @Delete
-    void delete(Transactions.Result transaction);
 
     @Query("SELECT * FROM tx")
     List<Transactions.Result> getAll();
 
+    @Query("SELECT * FROM tx WHERE hash = :hash")
+    List<Transactions.Result> getByHash(String hash);
+
+    @Delete
+    void delete(Transactions.Result transaction);
+
     @Query("DELETE FROM tx")
     void deleteAll();
+
 }

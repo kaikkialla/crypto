@@ -3,23 +3,25 @@ package banana.digital.crypto;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-public class Executor {
-    public static class SingletonHolder {
-        public static final Executor HOLDER_INSTANCE = new Executor();
-    }
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-    public static Executor getInstance() {
-        return SingletonHolder.HOLDER_INSTANCE;
-    }
+public enum Executor {
 
-    public static ScheduledExecutorService mService;
+    EXECUTOR;
+
+    private ScheduledExecutorService mService;
 
     public void start() {
-        int poolsize = 3;
-        mService = Executors.newScheduledThreadPool(poolsize);
+        final int poolSize = Runtime.getRuntime().availableProcessors() / 2 + 2; // число потоков
+        mService = Executors.newScheduledThreadPool(poolSize);
     }
 
-    public static void execute(Runnable runnable) {
+    public void execute(Runnable runnable) {
         mService.execute(runnable);
     }
+
+    public void execute(Runnable runnable, long timeout) {
+        mService.schedule(runnable, timeout, MILLISECONDS);
+    }
+
 }

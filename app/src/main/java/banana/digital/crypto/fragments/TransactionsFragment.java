@@ -1,18 +1,27 @@
 package banana.digital.crypto.fragments;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.jakewharton.rxbinding3.appcompat.RxSearchView;
 
 import org.web3j.utils.Convert;
 
 import java.math.BigDecimal;
+import java.security.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -52,7 +61,7 @@ public class TransactionsFragment extends Fragment {
     Disposable mDisposable;
     static LinearLayout header;
 
-    ViewModel viewModel;
+    viewModel viewModel;
 
     @Nullable
     @Override
@@ -79,7 +88,7 @@ public class TransactionsFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
 
 
-        viewModel = ViewModelProviders.of(this).get(ViewModel.class);
+        viewModel = ViewModelProviders.of(getActivity()).get(viewModel.class);
     }
 
     @Override
@@ -87,10 +96,13 @@ public class TransactionsFragment extends Fragment {
         super.onResume();
         setHeaderSize();
 
-        viewModel.getTransactions("0").observe(getActivity(), results -> {
-            adapter.swap(results);
-            recyclerView.setAdapter(adapter);
+
+        viewModel.getTransactions("").observe(getActivity(), transactions -> {
+            // когда получили транзакции - обновляем список
+            adapter.swap(transactions);
         });
+
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -99,19 +111,44 @@ public class TransactionsFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                viewModel.getTransactions(newText).observe(getActivity(), results -> {
-                    adapter.swap(results);
-                    recyclerView.setAdapter(adapter);
+                // когда пользователь вводит текст - запрашиваем транзакции
+                viewModel.getTransactions(newText).observe(getActivity(), transactions -> {
+                    // когда получили транзакции - обновляем список
+                    adapter.swap(transactions);
                 });
                 return false;
             }
         });
+
+
+
+
+
+        /*
+
+            timestamp не сохраняется
+
+         */
+        if(!isNetworkAvailable()) {
+            final String[] a = new String[1];
+            viewModel.getTimestamp().observe(getActivity(), timestamp -> {
+                a[0] = new SimpleDateFormat("yyyy-MM-dd").format(new Date(timestamp));
+            });
+            Toast.makeText(getActivity(), "No internet connection available \n loading data from " + a[0], Toast.LENGTH_SHORT).show();
+            Log.e("kfipsakfgops", "no");
+        }
+
+
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mDisposable.dispose();
+        if (mDisposable != null) {
+            mDisposable.dispose();
+            mDisposable = null;
+        }
     }
 
     void setHeaderSize() {
@@ -123,42 +160,19 @@ public class TransactionsFragment extends Fragment {
     }
 
 
-
-
-
-
-
-    public static class ViewModel extends androidx.lifecycle.ViewModel {
-
-        public MutableLiveData<List<Transactions.Result>> transactions = new MutableLiveData<>();
-        String query;
-        public Disposable transactionsDisposable;
-
-        public ViewModel() {
-        }
-
-        public LiveData<List<Transactions.Result>> getTransactions(String query) {
-            this.query = query;
-            subscribeTransactions();
-            return transactions;
-        }
-
-        public void subscribeTransactions() {
-            if (transactionsDisposable != null) {
-                transactionsDisposable.dispose();
-            }
-
-            transactionsDisposable = RxTransactionRepository.getInstance().getTransactions().subscribe(transactions -> {
-                final List<Transactions.Result> filteredTransactions = new ArrayList<>();
-                for (Transactions.Result transaction : transactions) {
-                    if (transaction.getHash().contains(query)) {
-                        filteredTransactions.add(transaction);
-                    }
-                }
-                this.transactions.setValue(filteredTransactions);
-            });
-        }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
+
+
+
+
+
+
 
 
 
@@ -254,5 +268,59 @@ public class TransactionsFragment extends Fragment {
             this.value = itemView.findViewById(R.id.value);
             this.hash = itemView.findViewById(R.id.hash);
         }
+    }
+}
+
+
+class viewModel extends ViewModel {
+    private MutableLiveData<List<Transactions.Result>> transactions = new MutableLiveData<>();
+    private String query;
+    private Disposable transactionsDisposable;
+
+    private Disposable timestampDisposable;
+    private MutableLiveData<Long> timestamp = new MutableLiveData<>();
+
+
+    public LiveData<List<Transactions.Result>> getTransactions(String query) {
+        this.query = query; // сохраняем поисковый запрос (чтобы потом отфильтровать)
+        subscribeTransactions(); // подписываем на транзакции (если ещё не)
+        return transactions;
+    }
+
+    private void subscribeTransactions() {
+        if (transactionsDisposable != null) { // если уже подписались
+            transactionsDisposable.dispose(); // отписываемся
+        }
+        // переподписываемся на все транзакции
+        transactionsDisposable = RxTransactionRepository.getInstance().getTransactions()
+                .subscribe(transactions -> {
+                    // когда они приходят, фильтруем
+                    final List<Transactions.Result> filteredTransactions = new ArrayList<>();
+                    for (Transactions.Result transaction : transactions) {
+                        if (transaction.getHash().contains(query)) {
+                            filteredTransactions.add(transaction);
+                        }
+                    }
+                    // и кладём в контейнер
+                    this.transactions.setValue(filteredTransactions);
+                });
+    }
+
+
+
+
+    public MutableLiveData<Long> getTimestamp() {
+        subscribeTimestamp();
+        return timestamp;
+    }
+
+    private void subscribeTimestamp() {
+        if(timestampDisposable != null) {
+            timestampDisposable.dispose();
+        }
+
+        timestampDisposable = RxTransactionRepository.getInstance().getTimestamp().subscribe(timestamp -> {
+            this.timestamp.setValue(timestamp);
+        });
     }
 }

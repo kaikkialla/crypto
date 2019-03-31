@@ -4,6 +4,10 @@ import android.app.Application;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
+import banana.digital.crypto.repository.RxTransactionRepository;
+
+import static banana.digital.crypto.Executor.EXECUTOR;
+
 public class MainApplication extends Application {
 
     public static int SCREEN_WIDTH_PX;
@@ -14,7 +18,10 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Executor.getInstance().start();
+
+
+        Executor.EXECUTOR.start();
+        RxTransactionRepository.getInstance().initialize(this);
 
 
         DisplayMetrics dm = new DisplayMetrics();

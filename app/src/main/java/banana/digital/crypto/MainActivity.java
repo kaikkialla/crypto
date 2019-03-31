@@ -36,10 +36,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        RxTransactionRepository.getInstance().initialize(this);
+        //RxTransactionRepository.getInstance().initialize(this);
         setContentView(R.layout.activity_main);
 
-        Executor.getInstance().start();
 
 //        DisplayMetrics dm = new DisplayMetrics();
 //        getWindowManager().getDefaultDisplay().getMetrics(dm);

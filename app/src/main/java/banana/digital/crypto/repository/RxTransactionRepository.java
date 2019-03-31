@@ -27,32 +27,55 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static banana.digital.crypto.Executor.EXECUTOR;
+
 public class RxTransactionRepository {
-    public static RxTransactionRepository instance;
-
-    BehaviorSubject<List<Transactions.Result>> transactions = BehaviorSubject.create();
-    TransactionDao mTransactionDao;
 
 
-    private RxTransactionRepository(){}
+    private static RxTransactionRepository sInstance;
 
+    private TransactionDao mTransactionDao;
+    private BehaviorSubject<List<Transactions.Result>> transactions = BehaviorSubject.create();
+    private BehaviorSubject<Long> timestamps=  BehaviorSubject.create();
+
+    private static class InstanceHolder {
+        static final RxTransactionRepository sInstance = new RxTransactionRepository();
+    }
+
+    private RxTransactionRepository() {
+        // stub
+    }
 
     public static RxTransactionRepository getInstance() {
-        if (instance == null) {
-            instance = new RxTransactionRepository();
-        }
-        return instance;
+        return InstanceHolder.sInstance;
     }
 
 
 
-    public void updateTransactions() {
+    public Observable<List<Transactions.Result>> getTransactions() {
+        updateTransactions();
+        return transactions;
+    }
+
+    public Observable<Long> getTimestamp() {
+        return timestamps;
+    }
+
+
+    public void initialize(Context context) {
+        mTransactionDao = Room.databaseBuilder(context.getApplicationContext(), MainDatabase.class, "database").build().getTransactionDao();
+        loadTransactions();
+    }
+
+
+    private void updateTransactions() {
         Service.getEtherscanSevices().getTransactions("0xA4Eb0f8D1DAa48D6e6675022a208006fDC89606B").enqueue(new Callback<Transactions>() {
             @Override
             public void onResponse(Call<Transactions> call, Response<Transactions> response) {
                 if(response.isSuccessful()) {
                     transactions.onNext(response.body().getResult());
                     saveTransactions(response.body().getResult());
+                    updateTimestamp();
                 }
             }
             @Override
@@ -63,52 +86,33 @@ public class RxTransactionRepository {
     }
 
 
-    public Observable<List<Transactions.Result>> getTransactions() {
-        updateTransactions();
-        return transactions;
+    private void updateTimestamp() {
+        long timestamp = System.currentTimeMillis();
+        timestamps.onNext(timestamp);
     }
 
 
-    public void initialize(Context context) {
-        mTransactionDao = Room.databaseBuilder(context.getApplicationContext(), MainDatabase.class, "database").build().getTransactionDao();
-        loadTransactions();
-    }
+    private void loadTransactions() {
+        EXECUTOR.execute(() -> transactions.onNext(mTransactionDao.getAll()));
+//        new AsyncTask<String, Integer, Void>() {
+//
+//            @Override
+//            protected Void doInBackground(String... strings) {
+//                transactions.onNext(mTransactionDao.getAll());
+//                return null;
+//            }
+//        };
 
-
-    @SuppressLint("StaticFieldLeak")
-    public void loadTransactions() {
-        new AsyncTask<String, Integer, Void>() {
-
-            @Override
-            protected Void doInBackground(String... strings) {
-                transactions.onNext(mTransactionDao.getAll());
-                return null;
-            }
-        };
 
     }
 
 
-    @SuppressLint({"StaticFieldLeak", "CheckResult"})
-    public void saveTransactions(List<Transactions.Result> transactions) {
-        Single.fromCallable(new Callable<Void>() {
-
-            @Override
-            public Void call() throws Exception {
-                mTransactionDao.deleteAll();
-                mTransactionDao.insert(transactions);
-                return null;
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(value -> {
-                    //код будет выполнен в главном потоке
-                    return value;
-                }).observeOn(Schedulers.io())
-                .map(value -> {
-                    //код будет выполнен в рабочем потоке
-                    return value;
-        });
+    private void saveTransactions(List<Transactions.Result> transactions) {
+        Single.fromCallable(() -> {
+            mTransactionDao.deleteAll();
+            mTransactionDao.insert(transactions);
+            return true;
+        }).subscribeOn(Schedulers.io()).subscribe();
 
 //        new AsyncTask<String, Integer, Void>() {
 //            @Override
